@@ -53,7 +53,7 @@ pipeline {
         stage("docker push to nexus") {
         
             steps {
-                    sh 'docker login localhost:8088 -u admin -p  hardjo@666'
+                    sh 'docker login localhost:8085 -u admin -p  hardjo@666'
                     sh ' docker tag prod localhost:8088/repos_nexus_formation/production:v2'
                     sh ' docker push localhost:8088/repos_nexus_formation/production:v2'
 
