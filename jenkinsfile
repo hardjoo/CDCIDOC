@@ -51,11 +51,14 @@ pipeline {
         }
 
         stage("docker push to nexus") {
+        
             steps {
-                sh '''
-                    echo makhyb rassk ya jo
-                '''
+                    sh 'docker login localhost:8088 -u admin -p  hardjo@666'
+                    sh ' docker tag prod localhost:8088/repos_nexus_formation/production:v2'
+                    sh ' docker push localhost:8088/repos_nexus_formation/production:v2'
+
             }
         }
+
     }
 }
