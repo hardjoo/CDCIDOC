@@ -21,7 +21,6 @@ stages{
        
         }
     }
-
       stage("build the project"){
         steps{
 
@@ -32,6 +31,7 @@ stages{
     }
 
     stage('sonarqube'){
+
             agent { 
                 docker { 
                     image 'sonarsource/sonar-scanner-cli' 
@@ -50,6 +50,14 @@ stages{
             
         }
 
+      stage("build the project"){
+        steps{
+
+            sh 'npm run build'
+          
+       
+        }
+    }
     stage("docker build"){
         steps{
 
@@ -68,7 +76,10 @@ stages{
 
             sh '''
             
+
             echo makhyb rassk ya jo
+
+            
             '''
           
 
