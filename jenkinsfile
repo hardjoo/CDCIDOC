@@ -1,92 +1,61 @@
 pipeline {
-    
-agent any  
-tools {   //using plugins
-  nodejs 'nodejs20'
-  dockerTool 'docker'
-
-}
-stages{
-    stage("git clone"){
-        steps{
-       git branch:'main', url:'https://github.com/aymenellouze/CI-CD-Documentation.git'
-        }
-    }
-    
-      stage("install dependencies"){
-        steps{
-     
-           
-           sh 'npm install'
-       
-        }
-    }
-      stage("build the project"){
-        steps{
-
-            sh 'npm run build'
-          
-       
-        }
+    agent any  
+    tools {
+        nodejs 'nodejs20'
+        dockerTool 'docker'
     }
 
-    stage('sonarqube'){
-
-            agent { 
-                docker { 
-                    image 'sonarsource/sonar-scanner-cli' 
-                    args '-v /var/run/docker.sock:/var/run/docker.sock --network cicddoc_hardjo'
-                } 
+    stages {
+        stage("git clone") {
+            steps {
+                git branch: 'main', url: 'https://github.com/aymenellouze/CI-CD-Documentation.git'
             }
-            steps{             
-             sh '''
-              sonar-scanner \
-                -Dsonar.projectKey=djo \
-                -Dsonar.sources=. \
-                -Dsonar.host.url=http://localhost:9000 \
-                -Dsonar.token=sqp_b836dd5c8c2bbfee0aea4736d67a6c77eab3212a
-             '''
+        }
+
+        stage("install dependencies") {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage("build the project") {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('sonarqube') {
+            agent {
+                docker {
+                    image 'sonarsource/sonar-scanner-cli'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock --network cicddoc_hardjo'
                 }
-            
+            }
+            steps {
+                sh '''
+                    sonar-scanner \
+                    -Dsonar.projectKey=djo \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=http://localhost:9000 \
+                    -Dsonar.token=sqp_b836dd5c8c2bbfee0aea4736d67a6c77eab3212a
+                '''
+            }
         }
 
-      stage("build the project"){
-        steps{
+        stage("docker build") {
+            steps {
+                sh '''
+                    docker build -t prod .
+                '''
+            }
+        }
 
-            sh 'npm run build'
-          
-       
+        stage("docker push to nexus") {
+            steps {
+                sh '''
+                    echo makhyb rassk ya jo
+                '''
+            }
         }
     }
-    stage("docker build"){
-        steps{
-
-            sh '''
-            
-             docker build -t prod .
-            '''          
-       
-        }
-    }
-
-
-    
-    stage("docker push to nexus"){
-        steps{
-
-            sh '''
-            
-
-            echo makhyb rassk ya jo
-
-            
-            '''
-          
-
-       
-        }
-        
-    }
-}
-    
 }
